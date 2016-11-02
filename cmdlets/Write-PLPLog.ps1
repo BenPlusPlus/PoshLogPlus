@@ -3,12 +3,12 @@
     [OutputType([PSObject])]
     Param
     (
-        [Parameter(Mandatory, Position=0, ValueFromPipeline=$true)]
+        [Parameter(Mandatory, Position=1, ValueFromPipeline=$true)]
         [ValidateNotNull()]
         [PSObject]
         $LogFile,
 
-        [Parameter(Mandatory, Position=1)]
+        [Parameter(Mandatory, Position=0)]
         [string]
         $Message
     )

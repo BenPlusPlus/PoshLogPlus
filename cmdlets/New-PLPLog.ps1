@@ -8,11 +8,9 @@ function New-PLPLog {
         [string]
         $FilePath,
 
-        [Parameter(ParameterSetName='ParamSetOverwrite')]
         [switch]
         $Overwrite,
 
-        [Parameter(ParameterSetName='ParamSetAppend')]
         [switch]
         $Append
     )
@@ -20,6 +18,12 @@ function New-PLPLog {
     Begin {}
 
     Process {
+        # Validate switch combinations
+        if ($Overwrite -and $Append) {
+            Write-Error 'The -Overwrite and -Append parameters cannot be used together; they are mutually exclusive.'
+            return $null
+        }
+
         if (Test-Path $FilePath -PathType Leaf) {
             if ($Overwrite) {
                 Remove-Item -Path $FilePath -Force
