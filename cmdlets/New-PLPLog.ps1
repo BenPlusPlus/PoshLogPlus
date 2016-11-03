@@ -1,6 +1,39 @@
+<#
+.SYNOPSIS
+    Creates a log object for use with PoshLogPlus logging functions.
+.DESCRIPTION
+    This command will construct a log object that can be passed to
+    other *-PLP functions for log writing. The log object holds
+    certain properties of the resulting log file so that each PLP
+    function knows how to treat that file.
+.PARAMETER FilePath
+    The full path and filename of the desired log file. The file
+    cannot already exist unless either the -Overwrite or -Append
+    switch is passed to this command.
+.PARAMETER Overwrite
+    If the specified file currently exists, delete it immediately
+    in anticipation of the writing of a new log. Cannot be used
+    simultaneously with the -Append parameter.
+.PARAMETER Append
+    If the specified file currently exists, preserve it and simply
+    append further log messages to that file. Cannot be used
+    simultaneously with the -Overwrite parameter.
+.PARAMETER Encoding
+    The character encoding of the resulting log file. Valid values
+    are: 'Unicode','BigEndianUnicode','UTF8','UTF7','UTF32','ASCII',
+    'Default','OEM'
+.EXAMPLE
+    $log = New-PLPLog -FilePath 'C:\Logs\MyScript.log'
+.EXAMPLE
+    $log = New-PLPLog -FilePath 'C:\Logs\MyScript.log' -Encoding 'Unicode' -Overwrite
+.NOTES
+    Created By : Ben Baird
+.LINK
+    https://github.com/BenPlusPlus/PoshLogPlus
+#>
 function New-PLPLog {
     [CmdletBinding()]
-    [OutputType([PSObject])]
+    [OutputType([PLPLog])]
     Param
     (
         [Parameter(Mandatory, Position=0)]
@@ -12,7 +45,11 @@ function New-PLPLog {
         $Overwrite,
 
         [switch]
-        $Append
+        $Append,
+
+        [ValidateSet('Unicode','BigEndianUnicode','UTF8','UTF7','UTF32','ASCII','Default','OEM')]
+        [string]
+        $Encoding = 'Unicode'
     )
 
     Begin {}
@@ -33,7 +70,8 @@ function New-PLPLog {
                 return $null
             }
         }
-        $obj = "" | select FilePath
+        $obj = New-Object PLPLog
+
         # Normalize the path since any relative elements could have weird side effects
         # during script execution (if Get-Location changes).
         #
@@ -44,6 +82,8 @@ function New-PLPLog {
         [System.IO.Directory]::SetCurrentDirectory(((Get-Location -PSProvider FileSystem).ProviderPath))
         $obj.FilePath = [System.IO.Path]::GetFullPath($FilePath)
         [System.IO.Directory]::SetCurrentDirectory($oldDir)
+
+        $obj.Encoding = $Encoding
         $obj
     }
 

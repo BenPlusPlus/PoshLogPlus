@@ -5,7 +5,7 @@
     (
         [Parameter(Mandatory, Position=1, ValueFromPipeline=$true)]
         [ValidateNotNull()]
-        [PSObject]
+        [PLPLog]
         $LogFile,
 
         [Parameter(Mandatory, Position=0)]
@@ -16,7 +16,8 @@
     Begin {}
 
     Process {
-        "$([DateTime]::Now.ToString('yyyy-MM-dd hh:mm:ss tt'))`t$Message" | Out-File -FilePath $($LogFile.FilePath) -Append
+        "$([DateTime]::Now.ToString('yyyy-MM-dd hh:mm:ss tt'))`t$Message" |
+            Out-File -FilePath $($LogFile.FilePath) -Encoding $($LogFile.Encoding) -Append
     }
 
     End {}
