@@ -1,4 +1,26 @@
-﻿function Write-PLPLog {
+﻿<#
+.SYNOPSIS
+    Writes a line to the specified log.
+.DESCRIPTION
+    This command writes the desired message to the specified log.
+    The properties of the PLPLog object will determine how the
+    message is written, and the format of the log. (See New-PLPLog
+    for details on how to generate the PLPLog object.)
+.PARAMETER Message
+    A string containing the message to be written.
+.PARAMETER LogFile
+    The PLPLog object (optionally passed in through the pipeline)
+    that points to the log to be updated.
+.EXAMPLE
+    $log | Write-PLPLog -Message 'A failure occurred.'
+.EXAMPLE
+    Write-PLPLog -Message 'A failure occurred.' -LogFile $log
+.NOTES
+    Created By : Ben Baird
+.LINK
+    https://github.com/BenPlusPlus/PoshLogPlus
+#>
+function Write-PLPLog {
     [CmdletBinding()]
     [OutputType([PSObject])]
     Param
